@@ -5,7 +5,6 @@ from serialise import serialise_board
 import torch
 from typing import Dict, Tuple
 from typing_extensions import Self
-from copy import deepcopy
 
 class Node:
     def __init__(self, board: Board, prior: float= 0, visit_count: int = 0, value_sum: float = 0):
@@ -65,24 +64,20 @@ class Node:
         return policies[np.argmax(visit_counts).item()]
 
     def make_node_move(self, my_policy: int, opp_policy: int) -> Self:
-        if opp_policy in self.children[my_policy].children:
+        #it is the bots turn to play
+        #traverse the tree to arrive at the new root by applying my (the bot's) policy and the opponent policy
+
+        if opp_policy in self.children[my_policy].children: #have i simulated your move? if so traverse the tree
             new_root = self.children[my_policy].children[opp_policy]
-            out = Node(
-                board= new_root.state.copy(),
-                prior= new_root.prior,
-                visit_count= new_root.visit_count,
-                value_sum= new_root.value_sum,
-                )
-            out.children = deepcopy(new_root.children)
-            self.children[my_policy].children.clear()
-            self.children.clear()
-            return out
-        else:
+            del self.children[my_policy].children #helping the GC
+            del self.children
+            return new_root
+        else: #opponent move was unexpected (should not happen often)
             new_root_state = self.state.copy()
             new_root_state.push(Move.from_uci(POLICY_MAP[my_policy]))
             new_root_state.push(Move.from_uci(POLICY_MAP[opp_policy]))
             out = Node(new_root_state)
-            self.children.clear()
+            del self.children
             return out
         
 
