@@ -16,7 +16,7 @@ class BotVsHuman:
     
     def _load_model(self, model_path):
         checkpoint = torch.load(model_path)
-        model = NetV1()
+        model = NetV1(cfg= checkpoint['model_config'])
         model.to(self.device)
         model.load_state_dict(checkpoint['model_state_dict'])
         return model
@@ -52,7 +52,7 @@ if __name__ == "__main__":
     device = torch.device("mps")
     game = BotVsHuman(
         None,
-        "/Users/kmwork/train_ochess/checkpoints/V1mini_checkpoint_epoch_20.pth",
+        "/Users/kmwork/mctchess/checkpoints/V1_checkpoint_epoch_6.pth",
         device
     )
     game.play()

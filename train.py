@@ -11,16 +11,16 @@ from utils import load_from_checkpoint
 device = torch.device("mps" if torch.backends.mps.is_available() else "cpu")
 print(f"Using {'MPS' if torch.backends.mps.is_available() else 'CPU'}")
 
-dataset = TrainingData('datasets/v1mini_25000.npz')
-dataloader = DataLoader(dataset, batch_size= 16, shuffle=True)
+dataset = TrainingData('datasets/V1_15000.npz')
+dataloader = DataLoader(dataset, batch_size= 128, shuffle=True)
 
-model_config = {"input_channels": 10, 
-                "tower_channels": 16,
-                "kernel_size": 5,
-                "padding": 2,
+model_config = {"input_channels": 14, 
+                "tower_channels": 8,
+                "kernel_size": 3,
+                "padding": 1,
                 "stride": 1,
-                "tower_size": 4,
-                "policy_channels": 16}
+                "tower_size": 10,
+                "policy_channels": 8}
 
 criterion_policy = nn.CrossEntropyLoss()
 criterion_value = nn.MSELoss()
@@ -40,7 +40,7 @@ else:
     losses = []
     model = NetV1(model_config)
     model.to(device)
-    optimizer = optim.AdamW(model.parameters(), lr= 1e-2)
+    optimizer = optim.SGD(model.parameters(), lr= 1e-2, momentum= 0.9)
     start_epoch = 0
     scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer=optimizer, mode= 'min', min_lr=1e-5)
     print("No checkpoint found. Starting from scratch.")
@@ -77,8 +77,8 @@ for epoch in range(start_epoch, num_epochs):
         # Update progress bar with loss
         progress_bar.set_postfix(loss=total_loss / (progress_bar.n + 1))
     
-    scheduler.step()
     mean_epoch_loss = total_loss/len(dataloader)
+    scheduler.step(mean_epoch_loss)
     losses.append(mean_epoch_loss)
     print(f'Epoch [{epoch+1}/{num_epochs}], Loss: {mean_epoch_loss:.4f}')
 

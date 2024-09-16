@@ -3,7 +3,7 @@ import chess
 import chess.pgn
 from constants import POLICY_MAP
 
-_EMPTY_STATE = np.zeros(shape= (42, 8, 8))
+_EMPTY_STATE = [np.zeros(shape= (8, 8)) for _ in range(14)]
 
 def u64_to_arr(bb: int):
     if bb == 0:
@@ -28,6 +28,8 @@ def _serialise_state(board: chess.Board):
         bbb = board.pieces_mask(p, False)
         state.append(bbb)
 
+    castle_bb = chess.BB_EMPTY
+
     if board.has_kingside_castling_rights(chess.WHITE):
         castle_bb |= chess.BB_G1
     if board.has_queenside_castling_rights(chess.WHITE):
@@ -41,12 +43,12 @@ def _serialise_state(board: chess.Board):
     state = [u64_to_arr(s) for s in state]
     return state
 
-def serialise_board(board: chess.Board, len_history: 3):
-    states = []
-    if len_history == 1:
-        states.append(_serialise_state)
-        return np.stack(states, 0)
+def serialise_board(board: chess.Board, len_history: int = 1):
     
+    if len_history == 1:
+        return np.stack( _serialise_state(board), 0)
+    
+    states = []
     board = board.copy()
     for _ in range(len_history): #also encode previous board states
         if len(board.move_stack) < len_history:
@@ -80,7 +82,7 @@ def generate_data(pgn_file: str, num_games: int =3):
         v = values[res]
         board = game.board()
         for move in game.mainline_moves():
-            s = serialise_board(board)
+            s = serialise_board(board, 1)
             states.append(s)
             m = serialise_move(move)
             moves.append(m)
@@ -94,5 +96,5 @@ def generate_data(pgn_file: str, num_games: int =3):
     return X, P, V
 
 if __name__ == "__main__":
-    X, P, V = generate_data("/Users/kmwork/Desktop/lichess_elite_2020-06.pgn", 25000)
-    np.savez("datasets/v1mini_25000.npz", X, P, V)
+    X, P, V = generate_data("/Users/kmwork/Desktop/lichess_elite_2020-06.pgn", 15000)
+    np.savez("datasets/V1_15000", X, P, V)
