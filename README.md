@@ -68,6 +68,7 @@ torch.save(...
 
 Now, just run train.py. You should see something like this:
 
-![[Screenshot 2024-09-17 at 6.36.08 PM.png]]
+<img width="1920" alt="Screenshot 2024-09-17 at 6 36 08 PM" src="https://github.com/user-attachments/assets/40b5f46f-e582-40a3-9995-80b47fca0775">
+
 
 That's it! Once you're done training, just follow the steps in the "Playing the bot" section to play against your bot. 
