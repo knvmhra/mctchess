@@ -1,0 +1,14 @@
+[project]
+name = "mctchess"
+version = "0.1.0"
+dependencies = [
+    "torch",
+    "numpy",
+    "tqdm",
+    "chess"
+    #you can also pip install these 4 libs if you don't have a dependency manager like poetry
+]
+
+[build-system]
+requires = [“setuptools”]
+build-backend = “setuptools.build_meta”

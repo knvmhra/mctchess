@@ -52,7 +52,7 @@ if __name__ == "__main__":
     device = torch.device("mps")
     game = BotVsHuman(
         None,
-        "/Users/kmwork/mctchess/checkpoints/V1_checkpoint_epoch_6.pth",
+        "checkpoints/V1_checkpoint_epoch_6.pth",
         device
     )
     game.play()

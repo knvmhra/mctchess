@@ -1,7 +1,9 @@
 datasets
-checkpoints
+checkpoints/*
+!checkpoints/V1_checkpoint_epoch_36.pth
 sandbox.ipynb
 venv
 .vscode
 .DS_Store
-__pycache__
+__pycache__/*
+*.pyc
