@@ -1,3 +1,5 @@
+##WORK IN PROGRESS
+
 A bot that plays chess using a neural evaluation and MCTS, based on AlphaGo.
 
 ### Playing the bot:
