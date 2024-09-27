@@ -1,4 +1,4 @@
-##WORK IN PROGRESS
+## This project is a work in progress.
 
 A bot that plays chess using a neural evaluation and MCTS, based on AlphaGo.
 
