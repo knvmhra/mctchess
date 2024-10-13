@@ -21,4 +21,11 @@ def load_from_checkpoint(path: str, device = torch.device):
 
     return model, optimizer, scheduler, model_config, losses, epoch
 
+def load_model_infer(model_path: str, device):
+        checkpoint = torch.load(model_path)
+        model = NetV1(cfg= checkpoint['model_config'])
+        model.to(device)
+        model.load_state_dict(checkpoint['model_state_dict'])
+        return model
+
     

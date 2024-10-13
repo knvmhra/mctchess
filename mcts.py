@@ -42,7 +42,7 @@ class Node:
                 self.children[i] = Node(board= board, prior= prior, visit_count= visit_count, value_sum= value_sum)
 
     def puct_score(self, child: Self, c=2) -> float:
-        Q = child.value() / (child.visit_count + 1)
+        Q = child.value()
         U = child.prior * np.sqrt(self.visit_count) / (child.visit_count + 1)
         return Q + c * U
 
@@ -66,7 +66,7 @@ class Node:
     def make_node_move(self, my_policy: int, opp_policy: int) -> Self:
         #it is the bots turn to play
         #traverse the tree to arrive at the new root by applying my (the bot's) policy and the opponent policy
-
+ 
         if opp_policy in self.children[my_policy].children: #have i simulated your move? if so traverse the tree
             new_root = self.children[my_policy].children[opp_policy]
             del self.children[my_policy].children #helping the GC
@@ -100,10 +100,11 @@ class MCTS:
 
     def search(self, root: Node, branching_factor: int= 0):
         self.model.eval()
-        node = root
-        search_path: list[Node] = [node]
 
         for _ in range(self.sims):
+
+            node = root
+            search_path: list[Node] = [node]
 
             while node.is_expanded():
                 _, node = node.select_child()
